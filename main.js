@@ -1,11 +1,12 @@
-let i=0,op='',num=[0.,0.],ans=false;
-
+let i=0,op='',num=[],clr=false,next=true;
 function hello(e){
     var val=e.target.innerText;
     var inp=document.getElementById("val");
    
-    if (ans==true)inp.value='0';
+    
     if(!isNaN(val)||val=='.'){
+        if (clr==true){inp.value='0';clr=false;}
+        next=true;
         if(inp.value=='0')
             inp.value='';
         inp.value+=val;
@@ -14,40 +15,51 @@ function hello(e){
     else if(val=='CE'){
         inp.value='0';
         op='';
-        ans=false;
+        num=[];
+        
     }
     else if(val=='DEL'){
-        ans=false;
+       
         inp.value=inp.value.slice(0,inp.value.length-1);
         if(inp.value=='')
             inp.value='0';
     }
-    else{
-        if(op==''){
-            num[i]=parseFloat(inp.value);
-            //console.log(num[0]);
-            i=(i+1)%2;
-            op=val;
-            inp.value='0';
-        }
-        else{
-            num[i]=parseFloat(inp.value);
-            performop(op);
+    else if(val=='='){
+        
+        num.push(parseFloat(inp.value));
+        if(num.length>=2){
+            performop();
+            num.pop();
             inp.value=num[0];
-            i=(i+1)%2;
-            op=val;
-            ans=true;
         }
-
+        op='';
+        clr=true;
+        num=[];
     }
-    console.log(num,op);
+    else {if(next){
+        num.push(parseFloat(inp.value));
+       
+        if(num.length>=2){
+            performop();
+            num.pop();
+            inp.value=num[0];
+            single=false;
+        }
+    }
+        op=val;
+        clr=true;
+        next=false;
+}
+    console.log(num,op,inp.value,num.length);
 }
 
-function performop(op){
+function performop(){
     switch(op){
         case '+':num[0]+=num[1];break;
-        case '-':num[0]-=num[1];;break;
-        case '/':num[0]-=num[1];;break;
-        case '*':num[0]-=num[1];;break;
+        case '-':num[0]-=num[1];break;
+        case '/':num[0]=(num[1]==0)?"Math Error":(num[0]/num[1]);break;
+        case 'x':num[0]*=num[1];break;
+        
     }
 }
+
